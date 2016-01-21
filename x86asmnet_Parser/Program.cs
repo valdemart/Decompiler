@@ -74,7 +74,7 @@ namespace x86asmnet_Parser
                         switch (tagName.ToLower())
                         {
                             case "table":
-                                if (depthLevel == 0) depthLevel++;
+                                if (depthLevel == 0 && tagContent.IndexOf("class=\"ref_table") != -1) depthLevel++;
                                 else if (depthLevel >= 4) { depthLevel++; cellContent = (cellContent ?? "") + "<table " + tagContent + '>'; }
                                 break;
                             case "tbody":
@@ -205,6 +205,7 @@ namespace x86asmnet_Parser
                     if (depthLevel >= 4) cellContent = (cellContent ?? "") + geekOpcodes[i];
                 }
             }
+            double avg = cells.Average(row => (double)row.Count);
         }
 
         public string PeekTagName(string xml, int start)
