@@ -21,6 +21,8 @@ namespace Decompiler.Instructions
                     consumedCount++;
                     break;
             }
+            interpretationText = "";
+            return 0;
         }
     }
 }
