@@ -1,0 +1,148 @@
+[0] - prefix byte
+[1] - 0f prefix byte
+[2] - pri opcode
+[3] - sec opcode
+[4] - pri opcode fields
+    +r - register code 0-7 added to pri opcode
+    # following bits are case sensiive. upper case means bit set.
+    w - operand size bit, may be combined with d or s, bt0
+    s - sign-extended bit, may be combined with w, bt1
+    d - direction, may be combined with w, bt1
+    tttn - condition, bt3-bt0
+    sr - segment register specifier, one of 4 original segment registers, bt3-bt4 (CS, DS, ES or SS)
+    sre - segment register specifier, any segment register, bt0-bt2 (SS, FS or GS) or bt3-bt5 (FS or GS)
+    mf - memory format, bt1-bt2
+[5] - register/opcode field. 0-7 means opcode extension value from modr/m, r means that modr/m specifies reg and r/m operands
+[6] - minimal processor number
+    00: 8086
+    01: 80186
+    02: 80286
+    03: 80386
+    04: 80486
+    P1 (05): Pentium
+    PX (06): Pentium with MMX
+    PP (07): Pentium Pro
+    P2 (08): Pentium II
+    P3 (09): Pentium III
+    P4 (10): Pentium 4
+    C1 (11): Core
+    C2 (12): Core 2
+    C7 (13): Core i7
+    IT (99): Itanium
+    
+    if range (f.e. 03-04): only inside range
+    if + (f.e. 03+): available also in 64-bit mode (unless next row says something else)
+    if ++ (f.e. 04++): same as + but only available in latter processors
+    if empty: 32-bit:00+, 64-bit:P4++
+[7] - documentation status (D -documented, M - documented marginally, U - undocumented, <empty> - documented)
+[8] - instruction mode
+    R - real, protected and 64-bit modes
+    P - protected and 64-bit modes
+    E - 64-bit mode
+    S - SMM only
+    <empty> - same as R
+[9] - minimal required ring level (3-0). if f, depends on some flag and should contain flag reference. if empty, ring 3
+[10] - lock prefix valid
+    L - valid with LOCK prefix
+    # following characters apply only to x87 FPU instructions, which are invalid with LOCK prefix
+    s - instruction pushes value to FPU register stack
+    p - instruction pops value from FPU register stack
+    P - same as p but pops twice
+[11] - instruction mnemonic
+    if given italic, unofficial mnemonic
+    if _no mnemonic_, there is no mnemonic for instruction (f.e. segment change prefixes)
+    if _invalid_, opcode is invalid in specified case
+    if _undefined_, officially undefined behavior of instruction
+    if _nop_, instruction is treated as NOP
+    if _null_, no meaning
+    if mnemonic is given, it may contain additional attributes like _nop_
+    _alias_ means that instruction is only an alias to another instruction, it should contain reference to original instruction
+    _part alias_ means that instruction is not real alias, it should contain reference to differences between instructions
+[12-15] - operands. if operand os italic, it is implicit operand (not given in asm source code). if operand is bold, instruction modifies operand
+    A - direct addres. no modr/m, direct address encoded after instruction opcodes
+    BA - memory addressed by DS:EAX (32-bit) or by RAX (64-bit)
+    BB - memory addressed by DS:EBX+AL (32-bit) or by RBX+AL (64-bit)
+    BD - memory addressed by DS:EDI (32-bit) or by RDI (64-bit)
+    C - reg field in modr/m specifies CR register
+    D - reg field in modr/m specifies DR register
+    E - modr/m follows opcodes and specifies r/m operand. if operand is memory address, address is given by segment register and displacement and/or SIB byte
+    ES - modr/m follows opcodes and specifies STi/m (E implied)
+    EST - modr/m follows opcode and specifies STi (E implied)
+    F - RFLAGS register
+    G - modr/m follows opcodes and specifies r
+    H - modr/m follows opcodes and specifies r in r/m bits (Mod part don't care, implicit: Mod=11b)
+    I - immediate value encoded in subsequent bytes
+    J - relative offset value, added to IP
+    M - modr/m follows opcodes and specifies m (Mod part can't be 11b)
+    N - modr/m follows opcodes and specifies packed quadword MMXn register in r/m
+    O - offset operand encoded in subsequent word, dword or qword (depending on address size attribute; Intel: moffs)
+    P - modr/m follows opcodes and specifies packed quadword MMXn register in r
+    Q - modr/m follows opcodes and specifies MMXn register or memory address (Intel: m64), possiblynusing SIB
+    R - modr/m mod field may be only 11b
+    S - modr/m follows opcodes and specifies segment register in reg
+    SC - stack operand. size depends on other operands and/or instruction (f.e. IRET, CALL, LEAVE)
+    T - reg field in modr/m specifies TR register
+    U - modr/m follows opcodes and specifies 128-bit XMM register in r/m
+    V - modr/m follows opcodes and specifies 128-bit XMM register in reg
+    W - modr/m follows opcodes and specifies XMM register or memory address (Intel: xmm/m128)
+    X - memory address specifird by DS:ESI or DS:SI (32-bit) or by DS:ESI or RSI (64-bit)
+    Y - memory address specifird by ES:EDI or ES:DI (32-bit) or by ES:EDI or RDI (64-bit). Implicit es segment can't be overridden by segment prefixes
+    Z - no modr/m. three LSB in opcode specify reg
+    
+    a - two word operands or two dword operands, in memory, depending on operand size prefix
+    b - byte operand
+    bcd - packed-BCD operand
+    bs - byte, sign-extended to destination operand size
+    bsq - like bs, extended to 64-bits
+    bss - like bs, extended to size of stack pointer (SP, ESP or RSP)
+    c - byte or word, depending on operand size prefix
+    d - dword operand, regardless of operand size prefix
+    di - dword integer (used by FPU)
+    dq - dqword, regardless of operand size prefix
+    dqp - dword or qword (qword when REX.W=1)
+    dr - qword real (c#: double)
+    ds - dword sign-extended to 64-bits
+    e - FPU environment (14 or 28 bits)
+    er - extended real (80-bits real)
+    p - 16:16 or 16:32 pointer operand (depending on operand size prefix)
+    pi - MMX qword
+    pd - packed into 128-bits, double-precision real numbers
+    ps - packed into 128-bits, single-precision real numbers
+    psq - packed into 64-bits, single-precision real numbers
+    pt - 16:64 pointer operand
+    ptp - 16:16 or 16:32 or 16:64 (with REX.W=1) pointer operand
+    q - qword operand, regardless of operand size prefix
+    qi - qword integer (used by FPU)
+    qp - qword with REX.W=1
+    s - 6- or 10-byte (in 64-bit mode) pseudodescriptor
+    sd - scalar element of 128-bit packed double-precision data
+    si - dword integer register
+    sr - dword real (c#: float)
+    ss - scalar element of 128-bit packed single-precision data
+    st - 94- or 108-bit FPU state
+    stx - 512-bit FPU and SIMD state
+    t - 10-byte far pointer operand
+    v - word or dword operand, depending on operand size prefix
+    vds - word or dword depending on operand size prefix or dword sign-extended to 64-bits with 64-bit operand size prefix
+    vq - qword (default) or word depending on operand size prefix
+    vqp - word or dword depending on operand size prefix or qword with REX.W=1
+    vs - word or dword sign-extended to stack pointer
+    w - word regardless of operand size prefix
+    wi - word integer (used by FPU)
+    va - word or dword depending on address size prefix
+    dqa - dword or qword depending on address size prefix
+    wa - word depending on address size prefix
+    wo - word depending on current operand size
+    ws - word depending on current stack size
+    da - dword depending on address size prefix
+    do - dword depending on current operand size
+    qa - qword depending on address size prefix
+    qs - qword depending on current stack size
+[16] - instruction extension group
+[17-19] - instruction group
+[20] - tested flags in odiszapc pattern or in 1234 pattern for FPU (. - don't care)
+[21] - modified flags in odiszapc pattern or in 1234 pattern for FPU (. - don't care)
+[22] - defined flags in odiszapc pattern or in 1234 pattern for FPU (. - don't care)
+[23] - undefined flags in odiszapc pattern or in 1234 pattern for FPU (. - don't care)
+[24] - flag values in case-sensitive odiszapc pattern or in 1234 pattern for FPU (constantly set flags, for FPU present flag holds its value)
+[25] - description/notes
