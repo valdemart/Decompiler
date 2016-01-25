@@ -205,7 +205,9 @@ namespace x86asmnet_Parser
                     if (depthLevel >= 4) cellContent = (cellContent ?? "") + geekOpcodes[i];
                 }
             }
-            double avg = cells.Average(row => (double)row.Count);
+            
+            //all data from html parsed, store in own structures
+
         }
 
         public string PeekTagName(string xml, int start)

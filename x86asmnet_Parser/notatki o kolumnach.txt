@@ -4,7 +4,7 @@
 [3] - sec opcode
 [4] - pri opcode fields
     +r - register code 0-7 added to pri opcode
-    # following bits are case sensiive. upper case means bit set.
+    # following bits are case sensitive. upper case means bit set.
     w - operand size bit, may be combined with d or s, bt0
     s - sign-extended bit, may be combined with w, bt1
     d - direction, may be combined with w, bt1
@@ -34,7 +34,7 @@
     if + (f.e. 03+): available also in 64-bit mode (unless next row says something else)
     if ++ (f.e. 04++): same as + but only available in latter processors
     if empty: 32-bit:00+, 64-bit:P4++
-[7] - documentation status (D -documented, M - documented marginally, U - undocumented, <empty> - documented)
+[7] - documentation status (D - documented, M - documented marginally, U - undocumented, <empty> - documented)
 [8] - instruction mode
     R - real, protected and 64-bit modes
     P - protected and 64-bit modes
@@ -77,7 +77,7 @@
     N - modr/m follows opcodes and specifies packed quadword MMXn register in r/m
     O - offset operand encoded in subsequent word, dword or qword (depending on address size attribute; Intel: moffs)
     P - modr/m follows opcodes and specifies packed quadword MMXn register in r
-    Q - modr/m follows opcodes and specifies MMXn register or memory address (Intel: m64), possiblynusing SIB
+    Q - modr/m follows opcodes and specifies MMXn register or memory address (Intel: m64), possibly using SIB
     R - modr/m mod field may be only 11b
     S - modr/m follows opcodes and specifies segment register in reg
     SC - stack operand. size depends on other operands and/or instruction (f.e. IRET, CALL, LEAVE)
@@ -97,8 +97,11 @@
     bss - like bs, extended to size of stack pointer (SP, ESP or RSP)
     c - byte or word, depending on operand size prefix
     d - dword operand, regardless of operand size prefix
+    da - dword depending on address size prefix
     di - dword integer (used by FPU)
+    do - dword depending on current operand size
     dq - dqword, regardless of operand size prefix
+    dqa - dword or qword depending on address size prefix
     dqp - dword or qword (qword when REX.W=1)
     dr - qword real (c#: double)
     ds - dword sign-extended to 64-bits
@@ -112,8 +115,10 @@
     pt - 16:64 pointer operand
     ptp - 16:16 or 16:32 or 16:64 (with REX.W=1) pointer operand
     q - qword operand, regardless of operand size prefix
+    qa - qword depending on address size prefix
     qi - qword integer (used by FPU)
     qp - qword with REX.W=1
+    qs - qword depending on current stack size
     s - 6- or 10-byte (in 64-bit mode) pseudodescriptor
     sd - scalar element of 128-bit packed double-precision data
     si - dword integer register
@@ -123,21 +128,16 @@
     stx - 512-bit FPU and SIMD state
     t - 10-byte far pointer operand
     v - word or dword operand, depending on operand size prefix
+    va - word or dword depending on address size prefix
     vds - word or dword depending on operand size prefix or dword sign-extended to 64-bits with 64-bit operand size prefix
     vq - qword (default) or word depending on operand size prefix
     vqp - word or dword depending on operand size prefix or qword with REX.W=1
     vs - word or dword sign-extended to stack pointer
     w - word regardless of operand size prefix
-    wi - word integer (used by FPU)
-    va - word or dword depending on address size prefix
-    dqa - dword or qword depending on address size prefix
     wa - word depending on address size prefix
+    wi - word integer (used by FPU)
     wo - word depending on current operand size
     ws - word depending on current stack size
-    da - dword depending on address size prefix
-    do - dword depending on current operand size
-    qa - qword depending on address size prefix
-    qs - qword depending on current stack size
 [16] - instruction extension group
 [17-19] - instruction group
 [20] - tested flags in odiszapc pattern or in 1234 pattern for FPU (. - don't care)
