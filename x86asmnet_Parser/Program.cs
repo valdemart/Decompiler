@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AsmInstructionFormat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -207,7 +208,52 @@ namespace x86asmnet_Parser
             }
             
             //all data from html parsed, store in own structures
+            List<AsmInstruction> instructions = new List<AsmInstruction>();
+            foreach (var row in cells)
+            {
+                string prefixByte = row[0];
+                string _0fPrefix = row[1];
+                string primaryOpc = row[2];
+                string secondaryOpc = row[3];
+                string priOpcodeFields = row[4];
+                string registerOpcodeExtension = row[5];
+                string processorNumber = row[6];
+                string documentationStatus = row[7];
+                string executionMode = row[8];
+                string lockPrefix = row[10];
+                string mnemonic = row[11];
+                string operand1 = row[12];
+                string operand2 = row[13];
+                string operand3 = row[14];
+                string operand4 = row[15];
+                string extensionGroup = row[16];
+                string category = (row[17].Trim() + ' ' + row[18].Trim() + ' ' + row[19].Trim()).Trim();
+                string testedFlags = row[20];
+                string modifiedFlags = row[21];
+                string definedFlags = row[22];
+                string undefinedFlags = row[23];
+                string setFlags = row[24];
+                string description = row[25];
 
+                AsmInstruction instr = new AsmInstruction();
+
+                bool instructionInvalid = mnemonic.Contains("invalid");
+                bool undefBehavior = mnemonic.Contains("undefined") || mnemonic.Contains("null");
+                bool nopLike = mnemonic.Contains("nop") || mnemonic.Contains("null");
+                if (mnemonic.Contains("no mnemonic")) mnemonic = "";
+                //todo
+                //...
+
+                int byteCount = 0;
+                long opcode = 0;
+                if (prefixByte != "" && IsHexNumber(prefixByte))
+                {
+                    opcode |= HexStringToLong(prefixByte) << (8 * byteCount);
+                    byteCount++;
+                }
+                //todo
+                //...
+            }
         }
 
         public string PeekTagName(string xml, int start)
@@ -222,6 +268,34 @@ namespace x86asmnet_Parser
 
             if (start == end) return "";
             return xml.Substring(start, end - start);
+        }
+
+        public bool IsHexNumber(string s)
+        {
+            s = s.ToLower();
+            string hexDigits = "0123456789abcdef";
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (hexDigits.IndexOf(s[i]) == -1)
+                    return false;
+            }
+            return true;
+        }
+
+        public long HexStringToLong(string s)
+        {
+            long buf = 0;
+            s = s.ToLower();
+            string hexDigits = "0123456789abcdef";
+
+            for (int i = 0; i < s.Length && i < 16; i++)
+            {
+                if (hexDigits.IndexOf(s[i]) != -1)
+                    buf = buf * 16 + hexDigits.IndexOf(s[i]);
+                else
+                    throw new FormatException();
+            }
+            return buf;
         }
     }
 }
